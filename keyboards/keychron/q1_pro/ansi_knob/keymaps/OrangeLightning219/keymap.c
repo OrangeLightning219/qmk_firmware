@@ -23,88 +23,21 @@ enum layers{
 
   WIN_QWERTY,
   WIN_FN,
-
-  QWERTY_SYMBOLS,
 };
 
-//   WIN_DVORAK,
-//   WIN_DVORAK_SHIFT,
-//   MAC_DVORAK,
-//   MAC_DVORAK_SHIFT,
-
-// Tap Dance keycodes
-enum td_keycodes {
-    SHIFT_UNDERSCORE
-};
-
-// Define a type containing as many tapdance states as you need
-typedef enum {
-    TD_NONE,
-    TD_UNKNOWN,
-    TD_SINGLE_TAP,
-    TD_SINGLE_HOLD,
-} td_state_t;
-
-// Create a global instance of the tapdance state type
-static td_state_t td_state;
-
-// Declare your tapdance functions:
-
-// Function to determine the current tapdance state
-td_state_t cur_dance(tap_dance_state_t *state);
-
-// `finished` and `reset` functions for each tapdance keycode
-void shift_underscore_finished(tap_dance_state_t *state, void *user_data);
-void shift_underscore_reset(tap_dance_state_t *state, void *user_data);
-
-// Define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
-tap_dance_action_t tap_dance_actions[] = {
-    [SHIFT_UNDERSCORE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, shift_underscore_finished, shift_underscore_reset)
+enum custom_keycodes
+{
+    UNDERSCORE = SAFE_RANGE,
+    INVERSE_QUOTE,
 };
 
 #define QWERTY(LCTL, META, LALT, RALT, FN) LAYOUT_ansi_82(                                                                                                                            \
         KC_ESC,                      KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,      KC_F10,     KC_F11,     KC_F12,   KC_DEL,   KC_MUTE, \
         KC_GRV,                      KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,       KC_0,       KC_MINS,    KC_EQL,   KC_BSPC,  KC_PGUP, \
         KC_TAB,                      KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,       KC_P,       KC_LBRC,    KC_RBRC,  KC_BSLS,  KC_PGDN, \
-        LT(QWERTY_SYMBOLS, KC_ESC),  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,       S(KC_MINS), S(KC_QUOT),           KC_ENT,   KC_HOME, \
+        KC_ESC,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,                KC_ENT,                         KC_HOME, \
         KC_LSFT,                     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,     KC_SLSH,    KC_RSFT,              KC_UP,             \
         LCTL,                        META,     LALT,                                 KC_SPC,                         RALT,       FN,         KC_RCTL,    KC_LEFT,  KC_DOWN,  KC_RGHT)
-
-#define _QWERTY_SYMBOLS() LAYOUT_ansi_82(                                                                                                                                         \
-        KC_ESC,                KC_F1,    KC_F2,    KC_F3,      KC_F4,    KC_F5,      KC_F6,    KC_F7,    KC_F8,      KC_F9,      KC_F10,   KC_F11,   KC_F12,   KC_DEL,   KC_MUTE, \
-        KC_GRV,                KC_1,     KC_2,     KC_3,       KC_4,     KC_5,       KC_6,     KC_7,     KC_8,       KC_9,       KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,  KC_PGUP, \
-        KC_TAB,                KC_Q,     S(KC_7),  KC_MINS,    KC_SLSH,  KC_T,       KC_Y,     S(KC_8),  S(KC_EQL),  S(KC_BSLS), KC_P,     KC_LBRC,  KC_RBRC,  KC_BSLS,  KC_PGDN, \
-        KC_TRNS,               KC_A,     KC_LBRC,  S(KC_LBRC), S(KC_9),  S(KC_SCLN), KC_EQL,   S(KC_0),  S(KC_RBRC), KC_RBRC,    KC_SCLN,  KC_QUOT,            KC_ENT,   KC_HOME, \
-        KC_LSFT,               KC_Z,     KC_X,     KC_C,       KC_V,     KC_B,       KC_N,     KC_M,     KC_COMM,    KC_DOT,     KC_SLSH,  KC_RSFT,            KC_UP,             \
-        KC_TRNS,               KC_TRNS,  KC_TRNS,                                 KC_DOT,                            KC_TRNS,    KC_TRNS,  KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT)
-
-/*
-#define PRIME_DVORAK(LCTL, META, LALT, RALT, FN, QWERTY_LAYER, SHIFT_LAYER) LAYOUT_ansi_82(                                                                                                 \
-        KC_ESC,                KC_F1,      KC_F2,    KC_F3,      KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,      KC_F9,    KC_F10,  KC_F11,     KC_F12,     S(KC_DEL),   TT(QWERTY_LAYER), \
-        S(KC_4),               S(KC_EQL),  KC_LBRC,  S(KC_LBRC), S(KC_9),  S(KC_7),  KC_EQL,   S(KC_0),  S(KC_RBRC), KC_RBRC,  S(KC_8), S(KC_1),    S(KC_BSLS), KC_BSPC,  KC_PGUP,          \
-        KC_TAB,                KC_SCLN,    KC_COMM,  KC_DOT,     KC_P,     KC_Y,     KC_F,     KC_G,     KC_C,       KC_R,     KC_L,    KC_SLSH,    S(KC_2),    KC_BSLS,  KC_PGDN,          \
-        MT(MOD_LCTL, KC_ESC),  KC_A,       KC_O,     KC_E,       KC_U,     KC_I,     KC_D,     KC_H,     KC_T,       KC_N,     KC_S,    S(KC_MINS),             KC_ENT,   KC_HOME,          \
-        MO(SHIFT_LAYER),       S(KC_QUOT), KC_Q,     KC_J,       KC_K,     KC_X,     KC_B,     KC_M,     KC_W,       KC_V,     KC_Z,    MO(SHIFT_LAYER),        KC_UP,                      \
-        LCTL,                  META,       LALT,                                 KC_SPC,                             RALT,     FN,      KC_RCTL,    KC_LEFT,    KC_DOWN,  KC_RGHT)
-
-#define PRIME_DVORAK_SHIFT() LAYOUT_ansi_82(                                                                                                                         \
-        KC_ESC,   KC_TRNS,    KC_TRNS,    KC_TRNS,   KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS, KC_TRNS,  KC_TRNS,    KC_TRNS,    KC_TRNS,  KC_TRNS, \
-        S(KC_GRV),   KC_1,       KC_2,       KC_3,      KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,    KC_0,  S(KC_5),    KC_GRV,     KC_TRNS,  KC_TRNS, \
-        KC_TRNS,  S(KC_SCLN), S(KC_COMM), S(KC_DOT), S(KC_P),  S(KC_Y),  S(KC_F),  S(KC_G),  S(KC_C),  S(KC_R), S(KC_L),  S(KC_SLSH), S(KC_6),    S(KC_3),  KC_TRNS, \
-        KC_TRNS,  S(KC_A),    S(KC_O),    S(KC_E),   S(KC_U),  S(KC_I),  S(KC_D),  S(KC_H),  S(KC_T),  S(KC_N), S(KC_S),  KC_MINS,                KC_TRNS,  KC_TRNS, \
-        KC_TRNS,  KC_QUOT,    S(KC_Q),    S(KC_J),   S(KC_K),  S(KC_X),  S(KC_B),  S(KC_M),  S(KC_W),  S(KC_V), S(KC_Z),  KC_TRNS,                KC_TRNS,           \
-        KC_TRNS,  KC_TRNS,    KC_TRNS,                                 KC_TRNS,                        KC_TRNS, KC_TRNS,  KC_TRNS,    KC_TRNS,    KC_TRNS,  KC_TRNS) 
-*/
-
-/*TD(SHIFT_UNDERSCORE)*/
-/*MT(MOD_MEH, KC_SPC)*/
-
-
-// [WIN_DVORAK] = PRIME_DVORAK(KC_LCTL, KC_LGUI, KC_LALT, KC_RALT, MO(WIN_FN), WIN_QWERTY, WIN_DVORAK_SHIFT),
-// [WIN_DVORAK_SHIFT] = PRIME_DVORAK_SHIFT(),
-
-// [MAC_DVORAK] = PRIME_DVORAK(KC_LCTL, KC_LOPTN, KC_LCMMD, KC_LCMMD, MO(MAC_FN), MAC_QWERTY, MAC_DVORAK_SHIFT),
-// [MAC_DVORAK_SHIFT] = PRIME_DVORAK_SHIFT(),
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_QWERTY] = QWERTY(KC_LCTL, KC_LOPTN, KC_LCMMD, KC_LCMMD, MO(MAC_FN)),
@@ -127,43 +60,60 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TRNS,            KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  BAT_LVL,  NK_TOGG,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,            KC_TRNS,  KC_TRNS,
         KC_TRNS,  KC_TRNS,  KC_TRNS,                                KC_TRNS,                                KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS),
 
-    [QWERTY_SYMBOLS] = _QWERTY_SYMBOLS(),
-
 };
 
-// bool dip_switch_update_user(uint8_t index, bool active) 
-// {
-//     if (index == 0)
-//     {
-//         default_layer_set(1UL << (active ? WIN_QWERTY : MAC_QWERTY));
-//     } 
-    
-//     return true;
-// }
+#define CUSTOM_KEY(keycode, normal, normal_with_shift, shifted, shifted_without_shift) \
+case keycode:                                                       \
+{                                                                   \
+    if (shift_active)                                               \
+    {                                                               \
+                                                                    \
+        if (record->event.pressed)                                  \
+        {                                                           \
+            if (shifted_without_shift)                              \
+            {                                                       \
+                del_mods(MOD_MASK_SHIFT);                           \
+            }                                                       \
+            register_code(shifted);                                 \
+            if (shifted_without_shift)                              \
+            {                                                       \
+                set_mods(mod_state);                                \
+            }                                                       \
+        }                                                           \
+        else                                                        \
+        {                                                           \
+            unregister_code(shifted);                               \
+        }                                                           \
+    }                                                               \
+    else                                                            \
+    {                                                               \
+        if (record->event.pressed)                                  \
+        {                                                           \
+            if (normal_with_shift) { add_mods(MOD_BIT(KC_LSFT)); }  \
+            register_code(normal);                                  \
+        }                                                           \
+        else                                                        \
+        {                                                           \
+            unregister_code(normal);                                \
+            if (normal_with_shift) { del_mods(MOD_BIT(KC_LSFT)); }  \
+        }                                                           \
+    }                                                               \
+    return false;                                                   \
+}                                                                   \
+break
 
-// layer_state_t layer_state_set_user(layer_state_t state) 
-// {
-//     switch (get_highest_layer(state)) 
-//     {
-//     case WIN_QWERTY:
-//     case MAC_QWERTY:
-//     case QWERTY_SHIFT:
-//     case QWERTY_SYMBOLS:
-//         rgblight_sethsv(203,  255, 255);
-//         break;
-//     // case WIN_DVORAK:
-//     // case WIN_DVORAK_SHIFT:
-//     // case MAC_DVORAK:
-//     // case MAC_DVORAK_SHIFT:
-//     //     rgblight_sethsv(179,  155, 255);
-//     //     break;
-//     default: //  for any other layers, or the default layer
-//         rgblight_sethsv(203,  255, 255);
-//         break;
-//     }
 
-//     return state;
-// }
+bool process_record_user(uint16_t keycode, keyrecord_t *record)
+{
+    uint8_t mod_state = get_mods();
+    uint8_t shift_active = mod_state & MOD_MASK_SHIFT;
+    switch (keycode)
+    {
+        CUSTOM_KEY(UNDERSCORE, KC_MINS, true, KC_MINS, false);
+        CUSTOM_KEY(INVERSE_QUOTE, KC_QUOT, true, KC_QUOT, true);
+    }
+    return true;
+}
 
 #if defined(ENCODER_MAP_ENABLE)
 #define VOLUME_KNOB {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)}
@@ -173,51 +123,5 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
     [MAC_FN] = RGB_KNOB,
     [WIN_QWERTY] = VOLUME_KNOB,
     [WIN_FN] = RGB_KNOB,
-    // [WIN_DVORAK] = VOLUME_KNOB,
-    // [WIN_DVORAK_SHIFT] = VOLUME_KNOB,
-    // [MAC_DVORAK] = VOLUME_KNOB,
-    // [MAC_DVORAK_SHIFT] = VOLUME_KNOB,
-
-    [QWERTY_SYMBOLS] = VOLUME_KNOB,
 };
 #endif // ENCODER_MAP_ENABLE
-
-// Determine the tapdance state to return
-td_state_t cur_dance(tap_dance_state_t *state) {
-    if (state->count == 1) {
-        if (state->pressed) return TD_SINGLE_HOLD;
-        else return TD_SINGLE_TAP;
-    }
-
-    else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
-}
-
-// Handle the possible states for each tapdance keycode you define:
-
-void shift_underscore_finished(tap_dance_state_t *state, void *user_data) {
-    td_state = cur_dance(state);
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            register_code16(KC_UNDS);
-            break;
-        case TD_SINGLE_HOLD:
-            register_mods(MOD_BIT(KC_LSFT)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
-            break;
-        default:
-            break;
-    }
-}
-
-void shift_underscore_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            unregister_code16(KC_UNDS);
-            break;
-        case TD_SINGLE_HOLD:
-            unregister_mods(MOD_BIT(KC_LSFT)); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
-            break;
-        default:
-            break;
-    }
-}
-
