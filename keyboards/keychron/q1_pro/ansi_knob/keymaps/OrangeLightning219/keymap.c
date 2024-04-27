@@ -16,6 +16,8 @@
 
 #include QMK_KEYBOARD_H
 #include "OrangeLightning219.h"
+#include "print.h"
+
 // clang-format off
 enum layers{  
   MAC_QWERTY,
@@ -27,17 +29,29 @@ enum layers{
 
 enum custom_keycodes
 {
-    UNDERSCORE = SAFE_RANGE,
-    INVERSE_QUOTE,
+    INV_MINS = SAFE_RANGE,
+    INV_QUOT,
+    INV_1,
+    INV_2,
+    INV_3,
+    INV_4,
+    INV_5,
+    INV_6,
+    INV_7,
+    INV_8,
+    INV_9,
+    INV_0,
+    INV_LBRC,
+    INV_RBRC
 };
 
 #define QWERTY(LCTL, META, LALT, RALT, FN) LAYOUT_ansi_82(                                                                                                                            \
-        KC_ESC,                      KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,      KC_F10,     KC_F11,     KC_F12,   KC_DEL,   KC_MUTE, \
-        KC_GRV,                      KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,       KC_0,       KC_MINS,    KC_EQL,   KC_BSPC,  KC_PGUP, \
-        KC_TAB,                      KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,       KC_P,       KC_LBRC,    KC_RBRC,  KC_BSLS,  KC_PGDN, \
-        KC_ESC,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,                KC_ENT,                         KC_HOME, \
-        KC_LSFT,                     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,     KC_SLSH,    KC_RSFT,              KC_UP,             \
-        LCTL,                        META,     LALT,                                 KC_SPC,                         RALT,       FN,         KC_RCTL,    KC_LEFT,  KC_DOWN,  KC_RGHT)
+        KC_ESC,                      KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,     KC_F11,     KC_F12,   KC_DEL,   KC_MUTE, \
+        KC_GRV,                      INV_1,    INV_2,    INV_3,    INV_4,    INV_5,    INV_6,    INV_7,    INV_8,    INV_9,    INV_0,      INV_MINS,   KC_EQL,   KC_BSPC,  KC_PGUP, \
+        KC_TAB,                      KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,       INV_LBRC,   INV_RBRC, KC_BSLS,  KC_PGDN, \
+        KC_ESC,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  INV_QUOT, KC_ENT,                                     KC_HOME, \
+        KC_LSFT,                     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,    KC_RSFT,              KC_UP,             \
+        LCTL,                        META,     LALT,                                 KC_SPC,                         RALT,     FN,         KC_RCTL,    KC_LEFT,  KC_DOWN,  KC_RGHT)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_QWERTY] = QWERTY(KC_LCTL, KC_LOPTN, KC_LCMMD, KC_LCMMD, MO(MAC_FN)),
@@ -67,18 +81,11 @@ case keycode:                                                       \
 {                                                                   \
     if (shift_active)                                               \
     {                                                               \
-                                                                    \
         if (record->event.pressed)                                  \
         {                                                           \
-            if (shifted_without_shift)                              \
-            {                                                       \
-                del_mods(MOD_MASK_SHIFT);                           \
-            }                                                       \
+            if (shifted_without_shift) { del_mods(MOD_MASK_SHIFT); }\
             register_code(shifted);                                 \
-            if (shifted_without_shift)                              \
-            {                                                       \
-                set_mods(mod_state);                                \
-            }                                                       \
+            if (shifted_without_shift) { set_mods(mod_state); }     \
         }                                                           \
         else                                                        \
         {                                                           \
@@ -91,17 +98,18 @@ case keycode:                                                       \
         {                                                           \
             if (normal_with_shift) { add_mods(MOD_BIT(KC_LSFT)); }  \
             register_code(normal);                                  \
+            if (normal_with_shift) { del_mods(MOD_BIT(KC_LSFT)); }  \
         }                                                           \
         else                                                        \
         {                                                           \
             unregister_code(normal);                                \
-            if (normal_with_shift) { del_mods(MOD_BIT(KC_LSFT)); }  \
         }                                                           \
     }                                                               \
     return false;                                                   \
 }                                                                   \
 break
 
+#define INVERSE_KEY(keycode, key) CUSTOM_KEY(keycode, key, true, key, true)
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
@@ -109,8 +117,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     uint8_t shift_active = mod_state & MOD_MASK_SHIFT;
     switch (keycode)
     {
-        CUSTOM_KEY(UNDERSCORE, KC_MINS, true, KC_MINS, false);
-        CUSTOM_KEY(INVERSE_QUOTE, KC_QUOT, true, KC_QUOT, true);
+        INVERSE_KEY(INV_MINS, KC_MINS);
+        INVERSE_KEY(INV_QUOT, KC_QUOT);
+        INVERSE_KEY(INV_1, KC_1);
+        INVERSE_KEY(INV_2, KC_2);
+        INVERSE_KEY(INV_3, KC_3);
+        INVERSE_KEY(INV_4, KC_4);
+        INVERSE_KEY(INV_5, KC_5);
+        INVERSE_KEY(INV_6, KC_6);
+        INVERSE_KEY(INV_7, KC_7);
+        INVERSE_KEY(INV_8, KC_8);
+        INVERSE_KEY(INV_9, KC_9);
+        INVERSE_KEY(INV_0, KC_0);
+        INVERSE_KEY(INV_LBRC, KC_LBRC);
+        INVERSE_KEY(INV_RBRC, KC_RBRC);
     }
     return true;
 }
@@ -125,3 +145,11 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
     [WIN_FN] = RGB_KNOB,
 };
 #endif // ENCODER_MAP_ENABLE
+
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  debug_enable=true;
+//   debug_matrix=true;
+  debug_keyboard=true;
+  //debug_mouse=true;
+}

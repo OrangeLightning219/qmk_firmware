@@ -1,3 +1,4 @@
 SRC += OrangeLightning219.c
-VIA_ENABLE = yes
+VIA_ENABLE = no
 DIP_SWITCH_ENABLE = yes
+CONSOLE_ENABLE = yes
