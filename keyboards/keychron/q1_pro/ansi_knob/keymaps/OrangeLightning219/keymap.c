@@ -29,7 +29,7 @@ enum layers{
 
 enum custom_keycodes
 {
-    INV_MINS = SAFE_RANGE,
+    SPACE_UNDERSCORE = SAFE_RANGE,
     INV_QUOT,
     INV_1,
     INV_2,
@@ -47,11 +47,11 @@ enum custom_keycodes
 
 #define QWERTY(LCTL, META, LALT, RALT, FN) LAYOUT_ansi_82(                                                                                                                            \
         KC_ESC,                      KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,     KC_F11,     KC_F12,   KC_DEL,   KC_MUTE, \
-        KC_GRV,                      INV_1,    INV_2,    INV_3,    INV_4,    INV_5,    INV_6,    INV_7,    INV_8,    INV_9,    INV_0,      INV_MINS,   KC_EQL,   KC_BSPC,  KC_PGUP, \
+        KC_GRV,                      INV_1,    INV_2,    INV_3,    INV_4,    INV_5,    INV_6,    INV_7,    INV_8,    INV_9,    INV_0,      KC_MINS,    KC_EQL,   KC_BSPC,  KC_PGUP, \
         KC_TAB,                      KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,       INV_LBRC,   INV_RBRC, KC_BSLS,  KC_PGDN, \
         KC_ESC,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  INV_QUOT, KC_ENT,                                     KC_HOME, \
         KC_LSFT,                     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,    KC_RSFT,              KC_UP,             \
-        LCTL,                        META,     LALT,                                 KC_SPC,                         RALT,     FN,         KC_RCTL,    KC_LEFT,  KC_DOWN,  KC_RGHT)
+        LCTL,                        META,     LALT,                                 SPACE_UNDERSCORE,               RALT,     FN,         KC_RCTL,    KC_LEFT,  KC_DOWN,  KC_RGHT)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_QWERTY] = QWERTY(KC_LCTL, KC_LOPTN, KC_LCMMD, KC_LCMMD, MO(MAC_FN)),
@@ -117,7 +117,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     uint8_t shift_active = mod_state & MOD_MASK_SHIFT;
     switch (keycode)
     {
-        INVERSE_KEY(INV_MINS, KC_MINS);
+        CUSTOM_KEY(SPACE_UNDERSCORE, KC_SPC, false, KC_MINS, false);
         INVERSE_KEY(INV_QUOT, KC_QUOT);
         INVERSE_KEY(INV_1, KC_1);
         INVERSE_KEY(INV_2, KC_2);
